@@ -1,25 +1,35 @@
+
+
+
 # Docker 部署 Mastodon - 一个去中心化的社交平台
 
 ## 开始之前
 
 准备一个域名和证书
 
-- 域名：`test.cuiwei.net`
-- 证书：`test.cuiwei.net.key`、`test.cuiwei.net.pem`
+- 域名：`yourDomain.com`
+- 证书：`yourDomain.key`、`yourDomain.pem`
 
 如果只是想本地跑一下，也行
 
-- 修改hosts：`127.0.0.1 test.cuiwei.net`
+- 修改hosts：`127.0.0.1 yourDomain.com`
 - web、streaming、sidekiq 这3个服务增加`extra_hosts`，如下：
 
 ```
 extra_hosts: 
-  - "test.cuiwei.net:192.168.11.241"
+  - "yourDomain:192.168.0.109"
 
-#192.168.11.241 为宿主机ip
+#192.168.0.109 为宿主机ip
 #extra_hosts作用是 往容器内/etc/hosts文件中添加记录，注意格式是相反的
 ```
-
+- 修改nginx/conf.d/zaranmm.xin.conf
+   修改如何地方为你自己的域名和ssl证书实际地方
+```
+server_name yourDomain.com;
+ssl_certificate   ssl/yourDomain.com.pem;
+ssl_certificate_key  ssl/yourDomain.com.key;
+```
+- 对于ssl证书，可以在nginx目录下新建ssl目录，将证书放在里面
 ## 快速开始
 
 ### 初始化
@@ -34,17 +44,56 @@ CREATE USER mastodon CREATEDB;
 create database mastodon owner mastodon encoding UTF8;
 ```
 
-接着，按照提示，一步步来
+接着，按照提示，一步步来，以下是我的可做参考
 
-![169908382570482.jpg](https://www.cuiwei.net/data/upload/2023-11-04/169908382570482.jpg)
-
+```
+LOCAL_DOMAIN=zaranmm.xin
+```
+```
+SINGLE_USER_MODE=false
+```
+```
+SECRET_KEY_BASE=ee9095affc96ac922059b93728da143acfc4d4af16721c92ed11b2166583e31454f3e19b5ae8f66f3183127f0ed8ee07aaa08006d5e00c5515fe86d8aa8e032
+```
+```
+OTP_SECRET=b182f5070d0a3c3c1f52ade3ef5ffd95ecfebdc1291a9ae602c2a382d686bde1eea3cdea2a9710e96e1dea3875f6307adc20ad4c735459ce4ca2a0cc3ea27bb3
+```
+```
+VAPID_PRIVATE_KEY=Nnh--Pw5lyIsZQCm9cTuW4f6epX4cC4H7QlxgkXK0Sk=
+```
+```
+VAPID_PUBLIC_KEY=BHExfrW4_fJqrlqTAV-orMIX85Axyc9n_Jcsu4VCYzZcThxZOjZezY6r0G5zxXWlerBkk0nybvoa5OdnvTJB0dY=
+```
+```
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=mastodon
+DB_USER=mastodon
+DB_PASS=
+```
+```
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_PASSWORD=
+```
+```
+SMTP_SERVER=smtp.mailgun.org
+SMTP_PORT=587
+SMTP_LOGIN=
+SMTP_PASSWORD=
+SMTP_AUTH_METHOD=plain
+SMTP_OPENSSL_VERIFY_MODE=none
+SMTP_ENABLE_STARTTLS=auto
+SMTP_FROM_ADDRESS=Mastodon <notifications@zaranmm.xin>
+```
+```
+UPDATE_CHECK_URL=
+```
 接下来，生成一份配置，需要手动复制到`.env.production`文件
-
-![169908382556411.jpg](https://www.cuiwei.net/data/upload/2023-11-04/169908382556411.jpg)
+也就是我上面给你的那些
 
 最后是导入数据，和创建管理员用户
-
-![169908382571691.jpg](https://www.cuiwei.net/data/upload/2023-11-04/169908382571691.jpg)
+管理员密码记一下
 
 
 ### 启动服务
@@ -54,7 +103,7 @@ docker compose up -d
 ```
 
 ## 访问
-https://test.cuiwei.net
+http://yourDomain.com
 
 
 ## 其他
