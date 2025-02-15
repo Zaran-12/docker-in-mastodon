@@ -37,7 +37,11 @@ ssl_certificate_key  ssl/yourDomain.com.key;
 docker compose -f docker-compose.yml run --rm web bundle exec rake mastodon:setup
 ```
 
-上一步执行成功，会启动`db`和`redis`两个容器，同时会提示你输入域名（先别输），先进到`db`容器创建一个给`mastodon`用的数据库，如下创建一个用户和数据库，名称都是`mastodon`，密码为空
+上一步执行成功，会启动`db`和`redis`两个容器，同时会提示你输入域名（先别输），先进到`db`容器
+```
+sudo docker exec -it mastodon-db-1 psql -U postgres
+```
+创建一个给`mastodon`用的数据库，如下创建一个用户和数据库，名称都是`mastodon`，密码为空
 ```
 psql -U postgres
 CREATE USER mastodon CREATEDB;
@@ -102,12 +106,16 @@ UPDATE_CHECK_URL=
 docker compose up -d
 ```
 
-## 访问
+## 访问（关掉代理）
 http://yourDomain.com
+也可以使用以下语句看看是否运行成功
+```
+curl -H "Host:zaranmm.xin" http://127.0.0.1/
+```
 
 
 ## 其他
-1. `.env.production` 从何而来？
+`.env.production` 从何而来？
 
 下载官方代码
 ```
@@ -116,3 +124,20 @@ git clone git@github.com:mastodon/mastodon.git
 根目录有个`.env.production.sample`文件，改名为 `.env.production`，(必须的)
 
 如果是初次运行，记得把里面`LOCAL_DOMAIN`, `PostgreSQL`，`redis`这些你知道的都配好（不配也可以，只是最后一步创建管理员账号会失败）
+
+端口占用解决办法
+```
+sudo lsof -i:80
+sudo kill -9 <pid>
+```
+
+结束运行
+```
+docker compose stop
+```
+
+删除镜像
+```
+sudo docker stop $(sudo docker ps -q)
+sudo docker rm$(sudo docker ps -aq)
+```
