@@ -32,6 +32,30 @@ ssl_certificate_key  ssl/yourDomain.com.key;
 - 对于ssl证书，可以在nginx目录下新建ssl目录，将证书放在里面
 ## 快速开始
 
+- 更新系统依赖
+```
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y \
+  git curl build-essential libssl-dev libreadline-dev \
+  zlib1g-dev libidn11-dev libicu-dev libpq-dev redis-server \
+  imagemagick ffmpeg libprotobuf-dev protobuf-compiler
+sudo apt install nginx
+```
+
+- 下载docker
+```
+bash <(curl -L https://get.docker.com/)
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+- 如何配置docker
+```
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker $USER 
+```
+
 ### 初始化
 ```
 docker compose -f docker-compose.yml run --rm web bundle exec rake mastodon:setup
