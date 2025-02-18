@@ -74,7 +74,6 @@ sudo docker exec -it mastodon-db-1 psql -U postgres
 ```
 创建一个给`mastodon`用的数据库，如下创建一个用户和数据库，名称都是`mastodon`，密码为空
 ```
-psql -U postgres
 CREATE USER mastodon CREATEDB;
 create database mastodon owner mastodon encoding UTF8;
 ```
