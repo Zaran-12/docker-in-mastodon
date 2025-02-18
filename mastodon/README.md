@@ -56,6 +56,13 @@ sudo systemctl enable docker
 sudo usermod -aG docker $USER 
 ```
 
+- 安装Node.js和yarn
+```
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt install -y nodejs
+npm install -g yarn
+```
+
 ### 初始化
 ```
 docker compose -f docker-compose.yml run --rm web bundle exec rake mastodon:setup
