@@ -1,7 +1,7 @@
 
 
 
-# Docker 部署 Mastodon - 一个去中心化的社交平台
+# 部署 Mastodon - 一个去中心化的社交平台
 
 ## 开始之前
 
