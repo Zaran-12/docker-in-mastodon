@@ -171,3 +171,34 @@ docker compose stop
 sudo docker stop $(sudo docker ps -q)
 sudo docker rm$(sudo docker ps -aq)
 ```
+对于申请证书，可以使用Let‘s Encrypt（设计单域名，泛域名详见这篇文章。https://www.cnblogs.com/michaelshen/p/18538178）
+- 先关闭容器
+```
+docker compose stop
+```
+- 使用前面说的端口占用问题，杀死所有80端口
+- 安装nginx
+```
+sudo apt install nginx
+sudo nginx -t
+```
+- 安装cerbot
+```
+sudo snap install --classic certbot #安装Certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot #创建一个符号链接，确保可以执行certbot命令（相当于快捷方式）
+```
+- 申请域名证书
+```
+sudo certbot --nginx -d example.com -d www.example.com 
+```
+- 自动续期
+```
+Let’s Encrypt 证书的有效期为 90 天，为了避免证书过期，我们可以使用 Cron Job 设置自动续期。
+首先，你可以手动测试续期是否正常：
+sudo certbot renew --dry-run
+如果没有报错，可以继续配置自动续期任务：
+sudo crontab -e
+在打开的编辑器中添加以下行，表示每天凌晨 2 点执行自动续期任务：
+0 2 * * * /usr/bin/certbot renew --quiet
+--quiet 参数表示静默模式，不会输出非错误信息。
+```
